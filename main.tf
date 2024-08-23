@@ -69,11 +69,6 @@ module "cloudwatch" {
   alarm_actions        = [module.sns.topic_arn]
 }
 
-# Ensure the CloudWatch Log Group exists
-resource "aws_cloudwatch_log_group" "api_gateway_log_group" {
-  name = "/aws/apigateway/${var.api_name}-${var.stage_name}"
-}
-
 # CloudWatch Metric Filter
 resource "aws_cloudwatch_log_metric_filter" "api_gateway_5xx_errors" {
   name           = "5xxErrorsFilter"
@@ -93,4 +88,8 @@ resource "aws_lambda_permission" "allow_api_gateway" {
   function_name = module.lambda.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${module.api_gateway.api_id}/*/GET/statuscode"
+}
+
+resource "aws_cloudwatch_log_group" "api_gateway_log_group" {
+  name = "/aws/apigateway/${var.api_name}-${var.stage_name}"
 }

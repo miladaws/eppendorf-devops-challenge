@@ -29,7 +29,18 @@ resource "aws_api_gateway_method" "get_statuscode" {
 resource "aws_api_gateway_deployment" "this" {
   depends_on  = [aws_api_gateway_integration.lambda]
   rest_api_id = aws_api_gateway_rest_api.this.id
-  # stage_name  = var.stage_name
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.statuscode.id,
+      aws_api_gateway_method.get_statuscode.id,
+      aws_api_gateway_integration.lambda.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Define the stage
@@ -38,19 +49,25 @@ resource "aws_api_gateway_stage" "this" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   stage_name    = var.stage_name
   description   = "Stage for ${var.stage_name}"
+
+  depends_on = [aws_api_gateway_account.this]
 }
 
 # Define method settings
-# resource "aws_api_gateway_method_settings" "this" {
-#   rest_api_id = aws_api_gateway_rest_api.this.id
-#   stage_name  = aws_api_gateway_stage.this.stage_name
-#   method_path = "*/*"
-# 
-#   settings {
-#     metrics_enabled = true
-#     logging_level   = "ERROR"
-#   }
-# }
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  stage_name  = aws_api_gateway_stage.this.stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled = true
+    logging_level   = "INFO"
+  }
+
+  depends_on = [aws_api_gateway_account.this]
+}
+
+
 
 # Define the API Key
 resource "aws_api_gateway_api_key" "this" {
@@ -91,4 +108,48 @@ resource "aws_api_gateway_integration" "lambda" {
   uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${var.lambda_function_arn}/invocations"
 }
 
+resource "aws_api_gateway_account" "this" {
+  cloudwatch_role_arn = aws_iam_role.cloudwatch.arn
+}
 
+resource "aws_iam_role" "cloudwatch" {
+  name = "api_gateway_cloudwatch_global"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = ""
+        Effect = "Allow"
+        Principal = {
+          Service = "apigateway.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "cloudwatch" {
+  name = "default"
+  role = aws_iam_role.cloudwatch.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents",
+          "logs:GetLogEvents",
+          "logs:FilterLogEvents"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
