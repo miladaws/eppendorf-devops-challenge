@@ -16,12 +16,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_wrapper: false
+          terraform_version: 1.7.5
+
+      - name: Check Terraform Version
+        run: terraform version
 
       - name: Terraform Init
         run: terraform init
