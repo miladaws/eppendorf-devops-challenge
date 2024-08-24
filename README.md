@@ -14,6 +14,11 @@ This project sets up a scalable and secure infrastructure on AWS using Terraform
 ### AWS Account
 Ensure you have an AWS account with the necessary permissions to create IAM roles, API Gateway, Lambda functions, and other resources.
 
+### GitHub Secrets
+To enable the CI/CD pipeline, you need to configure the following secrets in your GitHub repository:
+- `AWS_ACCESS_KEY_ID`: Your AWS access key ID.
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key.
+
 ## 3. Architecture Diagram
 
 ![Project Architecture](docs/assets/architecture.png)

@@ -85,7 +85,7 @@ variable "stage_name" {
 }
 
 variable "alarm_name" {
-  description = "The name of the CloudWatch alarm."
+  description = "CloudWatch alarm name."
   type        = string
   default     = "5xx_errors_alarm"
 }
