@@ -30,28 +30,49 @@ Ensure you have an AWS account with the necessary permissions to create IAM role
 
 ## 5. Setup Instructions
 
-   ```bash
-   git clone https://github.com/your-repo/infrastructure.git
-   cd infrastructure
-   ```
-
-## Configuring Terraform
-Ensure Terraform is installed and properly configured.
-
-### AWS Credentials
-Set up your AWS credentials:
+## Clone the repository
 
    ```bash
-   aws configure
+   git clone https://github.com/miladaws/eppendorf-devops-challenge
+   cd eppendorf-devops-challenge
    ```
 
-### Initialize Terraform
+## Configuring the Terraform State Backend
+To use an S3 bucket and DynamoDB table for Terraform state management and locking, follow these steps:
 
+### 1. Navigate to the Backend Configuration Directory
+This initializes the backend configuration and creates the necessary S3 bucket and DynamoDB table.
+   ```bash
+   cd backend
+   ```
+
+### 2. Navigate to the Backend Configuration Directory
+This initializes the backend configuration and creates the necessary S3 bucket and DynamoDB table.
    ```bash
    terraform init
    ```
 
-### Deploy Infrastructure
+### 3. pply the Backend Configuration
+Apply the configuration to create the S3 bucket and DynamoDB table.
+   ```bash
+   terraform apply
+   ```   
+
+### 4. Return to the Root Directory
+Apply the configuration to create the S3 bucket and DynamoDB table.
+   ```bash
+   cd ..
+   ``` 
+## Configuring Terraform in the Root Directory
+
+### 1. Initialize Terraform
+Initialize Terraform with the new backend configuration. This step ensures that Terraform is configured to use the S3 bucket and DynamoDB table for state management and locking.
+   ```bash
+   terraform init
+   ```
+
+### 2. Deploy the Infrastructure
+Apply the configuration to deploy your infrastructure as defined in the root Terraform files.
 
    ```bash
    terraform apply

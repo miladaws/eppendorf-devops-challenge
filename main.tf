@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket         = "eppendorf-s3-state-bucket082024"       # Replace with the actual bucket name
+    key            = "terraform/state.tfstate"               # Path in the S3 bucket for the state file
+    region         = "eu-central-1"                          # AWS region where the S3 bucket is located
+    encrypt        = true                                    # Encryption flag
+    dynamodb_table = "eppendorf-dynamodb-locking-table"      # DynamoDB table for state locking
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 }
@@ -42,6 +52,8 @@ module "api_gateway" {
   throttle_burst_limit               = 200
   throttle_rate_limit                = 180
   lambda_function_arn                = module.lambda.function_arn
+  api_gateway_role_arn               = module.iam_role.api_gateway_role_arn
+  cloudwatch_log_group_arn           = aws_cloudwatch_log_group.api_gateway_log_group.arn
   stage_name                         = var.stage_name
   region                             = var.aws_region
 }
@@ -57,9 +69,9 @@ module "sns" {
 # CloudWatch Alarm Module
 module "cloudwatch" {
   source             = "./modules/cloudwatch"
-  alarm_name         = "High5xxErrors"
-  metric_name        = "5xxErrors"
-  namespace          = "API/Errors"
+  alarm_name         = "High5XXErrors"
+  metric_name        = "5XXError"
+  namespace          = "Eppendorf/ApiGateway"
   threshold          = 10
   evaluation_periods = 1
   api_name           = module.api_gateway.api_name
@@ -69,17 +81,18 @@ module "cloudwatch" {
 
 # CloudWatch Metric Filter
 resource "aws_cloudwatch_log_metric_filter" "api_gateway_5xx_errors" {
-  name           = "5xxErrorsFilter"
+  name           = "5XXErrorsFilter"
   log_group_name = aws_cloudwatch_log_group.api_gateway_log_group.name
   pattern        = "{ $.status = 5* }"
 
   metric_transformation {
-    name         = "5xxErrors"
-    namespace    = "Eppendorf/ApiGateway"
+    name         = "5XXError"
+    namespace    = "Custom/ApiGateway"
     value        = "1"
   }
 }
 
+# Lambda permission
 resource "aws_lambda_permission" "allow_api_gateway" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
@@ -90,6 +103,7 @@ resource "aws_lambda_permission" "allow_api_gateway" {
 
 data "aws_caller_identity" "current" {}
 
+# Cloud watch log group for API Gateway
 resource "aws_cloudwatch_log_group" "api_gateway_log_group" {
   name = "/aws/apigateway/${var.api_name}-${var.stage_name}"
 }

@@ -1,7 +1,7 @@
 # Define the API Gateway
 resource "aws_api_gateway_rest_api" "this" {
-  name        = "${var.api_name}-${var.stage_name}"
-  description = "API Gateway for ${var.api_name}-${var.stage_name}"
+  name          = "${var.api_name}-${var.stage_name}"
+  description   = "API Gateway for ${var.api_name}-${var.stage_name}"
 
   tags = {
     Name        = "${var.api_name}-${var.stage_name}"
@@ -18,10 +18,10 @@ resource "aws_api_gateway_resource" "statuscode" {
 
 # Define the method
 resource "aws_api_gateway_method" "get_statuscode" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  resource_id   = aws_api_gateway_resource.statuscode.id
-  http_method   = "GET"
-  authorization = "NONE"
+  rest_api_id      = aws_api_gateway_rest_api.this.id
+  resource_id      = aws_api_gateway_resource.statuscode.id
+  http_method      = "GET"
+  authorization    = "NONE"
   api_key_required = true
 }
 
@@ -51,6 +51,23 @@ resource "aws_api_gateway_stage" "this" {
   description   = "Stage for ${var.stage_name}"
 
   depends_on = [aws_api_gateway_account.this]
+
+  access_log_settings {
+    destination_arn = var.cloudwatch_log_group_arn
+    format = jsonencode({
+      requestId               = "$context.requestId"
+      sourceIp                = "$context.identity.sourceIp"
+      requestTime             = "$context.requestTime"
+      protocol                = "$context.protocol"
+      httpMethod              = "$context.httpMethod"
+      resourcePath            = "$context.resourcePath"
+      routeKey                = "$context.routeKey"
+      status                  = "$context.status"
+      responseLength          = "$context.responseLength"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+    })
+  }
+
 }
 
 # Define method settings
@@ -107,7 +124,7 @@ resource "aws_api_gateway_integration" "lambda" {
 }
 
 resource "aws_api_gateway_account" "this" {
-  cloudwatch_role_arn = aws_iam_role.cloudwatch.arn
+  cloudwatch_role_arn = var.api_gateway_role_arn
 }
 
 resource "aws_iam_role" "cloudwatch" {

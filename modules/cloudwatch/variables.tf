@@ -4,12 +4,12 @@ variable "alarm_name" {
 }
 
 variable "metric_name" {
-  description = "The name of the metric to monitor. For 5xx errors, use '5xxErrors'."
+  description = "The name of the metric to monitor. For 5xx errors."
   type        = string
 }
 
 variable "namespace" {
-  description = "The namespace of the CloudWatch metric. Use 'API/Errors' or appropriate namespace."
+  description = "The namespace of the CloudWatch metric."
   type        = string
 }
 
