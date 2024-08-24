@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket         = "eppendorf-s3-state-bucket082024"       # Replace with the actual bucket name
+    key            = "terraform/state.tfstate"               # Path in the S3 bucket for the state file
+    region         = "eu-central-1"                          # AWS region where the S3 bucket is located
+    encrypt        = true                                    # Encryption flag
+    dynamodb_table = "eppendorf-dynamodb-locking-table"      # DynamoDB table for state locking
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 }
@@ -58,15 +68,15 @@ module "sns" {
 
 # CloudWatch Alarm Module
 module "cloudwatch" {
-  source        = "./modules/cloudwatch"
-  alarm_name    = "High5xxErrors"
-  metric_name   = "5xxErrors"
-  namespace     = "API/Errors"
-  threshold     = 10
+  source             = "./modules/cloudwatch"
+  alarm_name         = "High5xxErrors"
+  metric_name        = "5xxErrors"
+  namespace          = "API/Errors"
+  threshold          = 10
   evaluation_periods = 1
-  api_name      = module.api_gateway.api_name
-  stage_name    = var.stage_name
-  alarm_actions        = [module.sns.topic_arn]
+  api_name           = module.api_gateway.api_name
+  stage_name         = var.stage_name
+  alarm_actions      = [module.sns.topic_arn]
 }
 
 # Ensure the CloudWatch Log Group exists

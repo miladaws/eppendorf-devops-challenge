@@ -5,6 +5,16 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
+variable "terraform_state_bucket" {
+  description = "The name of the S3 bucket for Terraform state"
+  type        = string
+}
+
+variable "terraform_state_lock_table" {
+  description = "The name of the DynamoDB table for state locking"
+  type        = string
+}
+
 # IAM Role Name
 variable "role_name" {
   description = "The name of the IAM role for the Lambda function."
@@ -89,3 +99,4 @@ variable "alarm_name" {
   type        = string
   default     = "5xx_errors_alarm"
 }
+

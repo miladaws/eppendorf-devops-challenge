@@ -27,3 +27,7 @@ stage_name = "prod"
 
 # CloudWatch Alarm Name
 alarm_name = "5xx_errors_alarm"
+
+
+terraform_state_bucket      = "eppendorf-s3-state-bucket082024"  # Replace with the actual bucket name
+terraform_state_lock_table  = "eppendorf-dynamodb-locking-table" # DynamoDB table for state locking
