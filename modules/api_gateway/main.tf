@@ -67,8 +67,6 @@ resource "aws_api_gateway_method_settings" "all" {
   depends_on = [aws_api_gateway_account.this]
 }
 
-
-
 # Define the API Key
 resource "aws_api_gateway_api_key" "this" {
   name        = "${var.api_name}-api-key"

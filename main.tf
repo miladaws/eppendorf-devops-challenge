@@ -2,8 +2,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-data "aws_caller_identity" "current" {}
-
 # S3 Bucket Module
 module "s3_bucket" {
   source      = "./modules/s3_bucket"
@@ -52,21 +50,21 @@ module "api_gateway" {
 module "sns" {
   source      = "./modules/sns"
   topic_name  = "api-gateway-alarms"
-  protocol    = "email"  # or "sms", "lambda", etc.
-  endpoint    = "rezaeimilad@gmail.com"  # Replace with your email or endpoint
+  protocol    = "email"
+  endpoint    = "rezaeimilad@gmail.com"
 }
 
 # CloudWatch Alarm Module
 module "cloudwatch" {
-  source        = "./modules/cloudwatch"
-  alarm_name    = "High5xxErrors"
-  metric_name   = "5xxErrors"
-  namespace     = "API/Errors"
-  threshold     = 10
+  source             = "./modules/cloudwatch"
+  alarm_name         = "High5xxErrors"
+  metric_name        = "5xxErrors"
+  namespace          = "API/Errors"
+  threshold          = 10
   evaluation_periods = 1
-  api_name      = module.api_gateway.api_name
-  stage_name    = var.stage_name
-  alarm_actions        = [module.sns.topic_arn]
+  api_name           = module.api_gateway.api_name
+  stage_name         = var.stage_name
+  alarm_actions      = [module.sns.topic_arn]
 }
 
 # CloudWatch Metric Filter
@@ -76,9 +74,9 @@ resource "aws_cloudwatch_log_metric_filter" "api_gateway_5xx_errors" {
   pattern        = "{ $.status = 5* }"
 
   metric_transformation {
-    name      = "5xxErrors"
-    namespace = "Eppendorf/ApiGateway"
-    value     = "1"
+    name         = "5xxErrors"
+    namespace    = "Eppendorf/ApiGateway"
+    value        = "1"
   }
 }
 
@@ -89,6 +87,8 @@ resource "aws_lambda_permission" "allow_api_gateway" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${module.api_gateway.api_id}/*/GET/statuscode"
 }
+
+data "aws_caller_identity" "current" {}
 
 resource "aws_cloudwatch_log_group" "api_gateway_log_group" {
   name = "/aws/apigateway/${var.api_name}-${var.stage_name}"
