@@ -47,3 +47,13 @@ variable "region" {
   description = "The AWS region where the resources are deployed."
   type        = string
 }
+
+variable "cloudwatch_log_group_arn" {
+  description = "The ARN of the CloudWatch Log Group for API Gateway logs"
+  type        = string
+}
+
+variable "api_gateway_role_arn" {
+  description = "The ARN of the IAM role for API Gateway"
+  type        = string
+}

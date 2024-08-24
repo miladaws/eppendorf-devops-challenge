@@ -12,8 +12,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-data "aws_caller_identity" "current" {}
-
 # S3 Bucket Module
 module "s3_bucket" {
   source      = "./modules/s3_bucket"
@@ -54,6 +52,8 @@ module "api_gateway" {
   throttle_burst_limit               = 200
   throttle_rate_limit                = 180
   lambda_function_arn                = module.lambda.function_arn
+  api_gateway_role_arn               = module.iam_role.api_gateway_role_arn
+  cloudwatch_log_group_arn           = aws_cloudwatch_log_group.api_gateway_log_group.arn
   stage_name                         = var.stage_name
   region                             = var.aws_region
 }
@@ -62,16 +62,16 @@ module "api_gateway" {
 module "sns" {
   source      = "./modules/sns"
   topic_name  = "api-gateway-alarms"
-  protocol    = "email"  # or "sms", "lambda", etc.
-  endpoint    = "rezaeimilad@gmail.com"  # Replace with your email or endpoint
+  protocol    = "email"
+  endpoint    = "rezaeimilad@gmail.com"
 }
 
 # CloudWatch Alarm Module
 module "cloudwatch" {
   source             = "./modules/cloudwatch"
-  alarm_name         = "High5xxErrors"
-  metric_name        = "5xxErrors"
-  namespace          = "API/Errors"
+  alarm_name         = "High5XXErrors"
+  metric_name        = "5XXError"
+  namespace          = "Eppendorf/ApiGateway"
   threshold          = 10
   evaluation_periods = 1
   api_name           = module.api_gateway.api_name
@@ -79,28 +79,31 @@ module "cloudwatch" {
   alarm_actions      = [module.sns.topic_arn]
 }
 
-# Ensure the CloudWatch Log Group exists
-resource "aws_cloudwatch_log_group" "api_gateway_log_group" {
-  name = "/aws/apigateway/${var.api_name}-${var.stage_name}"
-}
-
 # CloudWatch Metric Filter
 resource "aws_cloudwatch_log_metric_filter" "api_gateway_5xx_errors" {
-  name           = "5xxErrorsFilter"
+  name           = "5XXErrorsFilter"
   log_group_name = aws_cloudwatch_log_group.api_gateway_log_group.name
   pattern        = "{ $.status = 5* }"
 
   metric_transformation {
-    name      = "5xxErrors"
-    namespace = "Eppendorf/ApiGateway"
-    value     = "1"
+    name         = "5XXError"
+    namespace    = "Custom/ApiGateway"
+    value        = "1"
   }
 }
 
+# Lambda permission
 resource "aws_lambda_permission" "allow_api_gateway" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = module.lambda.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${module.api_gateway.api_id}/*/GET/statuscode"
+}
+
+data "aws_caller_identity" "current" {}
+
+# Cloud watch log group for API Gateway
+resource "aws_cloudwatch_log_group" "api_gateway_log_group" {
+  name = "/aws/apigateway/${var.api_name}-${var.stage_name}"
 }
