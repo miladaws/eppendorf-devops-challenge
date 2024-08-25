@@ -90,3 +90,18 @@ variable "alarm_name" {
   default     = "5xx_errors_alarm"
 }
 
+variable "alarm_metric_name" {
+  description = "The metric name of alarm."
+  type        = string
+}
+
+variable "alarm_namespace" {
+  description = "The namespace of alarm."
+  type        = string
+}
+
+variable "sns_endpoint" {
+  description = "The email address for SNS notifications."
+  type        = string
+}
+

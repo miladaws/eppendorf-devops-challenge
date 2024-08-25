@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - Lambda module for deploying Lambda functions with specified configurations.
 - SNS module for creating SNS topics and subscriptions.
 - S3 Bucket module for managing S3 buckets and versioning.
+- Added instructions on setting up GitHub Actions and configuring necessary secrets.
+- Instructions for adding secrets to GitHub to enable the CI/CD pipeline.
+
 
 ### Changed
 - Updated Lambda module to support deployment from S3 bucket.
