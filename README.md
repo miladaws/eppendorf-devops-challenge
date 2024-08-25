@@ -196,6 +196,8 @@ For detailed documentation on each module, please refer to the following files:
 GitHub Actions Workflow
 This project utilizes GitHub Actions to implement a robust CI/CD (Continuous Integration and Continuous Deployment) pipeline. The provided GitHub Actions workflow automates the entire Terraform deployment process, ensuring that any changes to the infrastructure code are tested, validated, and applied automatically, reducing the risk of manual errors and ensuring consistency across environments. Checkou `GitHub Secrets` at `step 2`.
 
+All he deployment will be done automatically on Github after merging branches to the main.
+![CICD](docs/assets/CICD.png)
 
 ## 9. Best Practices
 This project adheres to IaC principles, allowing for version-controlled and consistent infrastructure deployments.
