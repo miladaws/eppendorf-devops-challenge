@@ -29,7 +29,7 @@ stage_name = "prod"
 alarm_name = "5xx_errors_alarm"
 
 # The email address for SNS notifications.
-sns_endpoint = "rezaeimilad@gmail.com"
+sns_endpoint = "your-email@example.com"
 
 # The metric name of alarm.
 alarm_metric_name = "5XXError"
