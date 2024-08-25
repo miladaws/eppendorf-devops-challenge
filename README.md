@@ -7,7 +7,7 @@ This project sets up a scalable and secure infrastructure on AWS using Terraform
 ## 2. Prerequisites
 
 ### Software Requirements
-- Terraform v1.x.x: Infrastructure as Code tool.
+- Terraform v1.9.5: Infrastructure as Code tool.
 - AWS CLI: To manage AWS services from the command line.
 - Git: Version control system.
 
@@ -45,25 +45,50 @@ To enable the CI/CD pipeline, you need to configure the following secrets in you
 ## Configuring the Terraform State Backend
 To use an S3 bucket and DynamoDB table for Terraform state management and locking, follow these steps:
 
-### 1. Navigate to the Backend Configuration Directory
-This initializes the backend configuration and creates the necessary S3 bucket and DynamoDB table.
+### 1. set up the S3 bucket name and DynamoDB table name in the code
+The S3 bucket name and DynamoDB table must be configured consistently in both the main.tf and terraform.tfvars files:
+
+main.tf in the root:
    ```bash
-   cd backend
+   terraform {
+      backend "s3" {
+         bucket         = "YOUR_BUCKET_NAME"              # Replace with the actual bucket name
+         ....
+         ....
+         ....
+         dynamodb_table = "YOUR_DYNAMODB_TABLE_NAME"      # DynamoDB table for state locking
+      }
+   }
+   ```
+
+terraform.tfvars in the root:
+   ```bash
+   # S3 bucket name for state file
+   terraform_state_bucket      = "YOUR_BUCKET_NAME"  # Replace with you bucket name
+
+   # DynamoDB table for state locking
+   terraform_state_lock_table  = "YOUR_DYNAMODB_TABLE_NAME" # Replace with your DynamoDB table name
    ```
 
 ### 2. Navigate to the Backend Configuration Directory
 This initializes the backend configuration and creates the necessary S3 bucket and DynamoDB table.
    ```bash
+   cd backend
+   ```
+
+### 3. Navigate to the Backend Configuration Directory
+This initializes the backend configuration and creates the necessary S3 bucket and DynamoDB table.
+   ```bash
    terraform init
    ```
 
-### 3. pply the Backend Configuration
+### 4. pply the Backend Configuration
 Apply the configuration to create the S3 bucket and DynamoDB table.
    ```bash
    terraform apply
    ```   
 
-### 4. Return to the Root Directory
+### 5. Return to the Root Directory
 Apply the configuration to create the S3 bucket and DynamoDB table.
    ```bash
    cd ..
@@ -84,6 +109,22 @@ Apply the configuration to deploy your infrastructure as defined in the root Ter
    ```
 
 Follow the prompts to confirm and deploy the infrastructure.
+
+## Configuring CI/CD with GitHub Actions
+
+### 1. GitHub Actions Setup
+Ensure that you have configured the GitHub Actions workflow located in `.github/workflows/terraform.yml`. This workflow automates the Terraform deployment process.
+
+### 2. Setting Up GitHub Secrets
+You need to add the following secrets to your GitHub repository to enable the CI/CD pipeline:
+- `AWS_ACCESS_KEY_ID`: Your AWS access key ID.
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key.
+
+To add these secrets, go to your GitHub repository:
+
+- Navigate to `Settings` > `Secrets and variables` > `Actions`.
+- Click New `repository secret` and add each secret with the appropriate name and value.
+
 
 ## 6. Module Documentation
 
