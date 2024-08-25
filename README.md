@@ -70,6 +70,15 @@ terraform.tfvars in the root:
    terraform_state_lock_table  = "YOUR_DYNAMODB_TABLE_NAME" # Replace with your DynamoDB table name
    ```
 
+## Configuring SNS Module
+The SNS module creates an SNS topic and subscription. The email address for notifications can be customized via the `sns_endpoint` variable.
+
+In the root terraform.tfvars file, specify the email address you want to use for notifications:
+terraform.tfvars
+```bash
+sns_endpoint = "your-email@example.com"
+```
+
 ### 2. Navigate to the Backend Configuration Directory
 This initializes the backend configuration and creates the necessary S3 bucket and DynamoDB table.
    ```bash
@@ -142,14 +151,15 @@ GitHub Actions Workflow
 The provided GitHub Actions workflow automates the Terraform deployment process, ensuring that any changes to the infrastructure are automatically applied.
 
 ## 8. Best Practices
-Infrastructure as Code (IaC)
 This project adheres to IaC principles, allowing for version-controlled and consistent infrastructure deployments.
 
 Security Considerations
 IAM roles are configured with the principle of least privilege to minimize security risks.
 
 ## 9. Troubleshooting
+
 Common Issues
+
 Terraform Init Errors: Ensure your Terraform version matches the required version.
 AWS Permission Denied: Verify that your AWS credentials have the necessary permissions.
 Logging and Monitoring

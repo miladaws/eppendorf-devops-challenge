@@ -90,3 +90,8 @@ variable "alarm_name" {
   default     = "5xx_errors_alarm"
 }
 
+variable "sns_endpoint" {
+  description = "The email address for SNS notifications."
+  type        = string
+}
+

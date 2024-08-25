@@ -63,7 +63,7 @@ module "sns" {
   source      = "./modules/sns"
   topic_name  = "api-gateway-alarms"
   protocol    = "email"
-  endpoint    = "rezaeimilad@gmail.com"
+  endpoint    = var.sns_endpoint
 }
 
 # CloudWatch Alarm Module
