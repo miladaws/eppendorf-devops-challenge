@@ -50,7 +50,7 @@ resource "aws_cloudwatch_metric_alarm" "this" {
 }
 ```
 
-The setup above will set an alarm in Cloud watch in order to trigger email via SNS notification (alarm_action) once the threshold is exceeded.
+The setup above will set an alarm in Cloud watch in order to trigger email via SNS notification (alarm_action) once the threshold is exceeded. Please not that Alarm might take some time to be triggered as the custom metric has been setup and AWS needs to capture some data first.
 
 ![Cloudwatch alarm](assets/alarm-1.png)
 ![Cloudwatch alarm](assets/alarm-2.png)
@@ -80,8 +80,6 @@ The module requires the following input variables:
 | `api_name`           | string      | The name of the API Gateway.                                              | n/a     |
 | `stage_name`         | string      | The environment stage name (e.g., dev, prod).                            | n/a     |
 | `alarm_actions`      | list(string)| List of ARNs for actions to execute when the alarm is triggered.          | n/a     |
-
-
 
 ## Outputs
 
