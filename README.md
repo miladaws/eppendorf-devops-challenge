@@ -104,13 +104,13 @@ Apply the configuration to create the S3 bucket and DynamoDB table.
    ``` 
 ## Configuring Terraform in the Root Directory
 
-### 1. Initialize Terraform
+### Initialize Terraform
 Initialize Terraform with the new backend configuration. This step ensures that Terraform is configured to use the S3 bucket and DynamoDB table for state management and locking.
    ```bash
    terraform init
    ```
 
-### 2. Deploy the Infrastructure
+### Deploy the Infrastructure
 Apply the configuration to deploy your infrastructure as defined in the root Terraform files.
 
    ```bash
@@ -120,16 +120,16 @@ Apply the configuration to deploy your infrastructure as defined in the root Ter
 Follow the prompts to confirm and deploy the infrastructure.
 
 
-### 3. Confirm the subscription to recieve alarm's notification
+### Confirm the subscription to recieve alarm's notification
 The owner of the email has to confirm the subscription in order to be able to recieve notification regarding the alarm. 
 ![SNS Topic](assets/subscription.png)
 
 ## Configuring CI/CD with GitHub Actions
 
-### 1. GitHub Actions Setup
+### GitHub Actions Setup
 Ensure that you have configured the GitHub Actions workflow located in `.github/workflows/terraform.yml`. This workflow automates the Terraform deployment process.
 
-### 2. Setting Up GitHub Secrets
+### Setting Up GitHub Secrets
 You need to add the following secrets to your GitHub repository to enable the CI/CD pipeline:
 - `AWS_ACCESS_KEY_ID`: Your AWS access key ID.
 - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key.
