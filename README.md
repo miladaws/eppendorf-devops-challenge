@@ -122,7 +122,7 @@ Follow the prompts to confirm and deploy the infrastructure.
 
 ### Confirm the subscription to recieve alarm's notification
 The owner of the email has to confirm the subscription in order to be able to recieve notification regarding the alarm. 
-![SNS Topic](assets/subscription.png)
+![SNS Topic](docs/assets/subscription.png)
 
 ## Configuring CI/CD with GitHub Actions
 
