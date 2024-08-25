@@ -3,7 +3,7 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = var.evaluation_periods
   metric_name         = "5XXError"
-  namespace           = "Custom/ApiGateway"
+  namespace           = "Eppendorf/ApiGateway"
   period              = 10  
   statistic           = "Sum"
   threshold           = var.threshold
