@@ -28,8 +28,8 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   alarm_name          = "${var.alarm_name}-${var.stage_name}"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = var.evaluation_periods
-  metric_name         = "5XXError"
-  namespace           = "Eppendorf/ApiGateway"
+  metric_name         = var.metric_name
+  namespace           = var.namespace
   period              = 10  
   statistic           = "Sum"
   threshold           = var.threshold
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_metric_alarm" "this" {
 
   dimensions = {
     ApiName   = var.api_name
-    Stage     = var.stage_name
+    Stage = var.stage_name
   }
 
   alarm_actions = var.alarm_actions 
@@ -49,6 +49,22 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   }
 }
 ```
+
+The setup above will set an alarm in Cloud watch in order to trigger email via SNS notification (alarm_action) once the threshold is exceeded.
+
+![Cloudwatch alarm](assets/alarm-1.png)
+![Cloudwatch alarm](assets/alarm-2.png)
+
+Once the threshold is met the user recieves a notificaiton via email. Please not that sns_endpoint has to be set in terraform.tfvars in the root folder in order to recieve the notification by email.
+
+  ```bash
+  # The email address for SNS notifications.
+  sns_endpoint = "rezaeimilad@gmail.com"
+  ```
+
+The owner of the email has to confirm the subscription in order to be able to recieve notification regarding the alarm.
+
+![SNS Topic](assets/subscription.png)
 
 ## Input Variables
 

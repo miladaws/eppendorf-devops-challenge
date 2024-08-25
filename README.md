@@ -119,6 +119,12 @@ Apply the configuration to deploy your infrastructure as defined in the root Ter
 
 Follow the prompts to confirm and deploy the infrastructure.
 
+
+### 3. Confirm the subscription to recieve alarm's notification
+The owner of the email has to confirm the subscription in order to be able to recieve notification regarding the alarm. 
+![SNS Topic](assets/subscription.png)
+
+
 ## Configuring CI/CD with GitHub Actions
 
 ### 1. GitHub Actions Setup
@@ -134,8 +140,48 @@ To add these secrets, go to your GitHub repository:
 - Navigate to `Settings` > `Secrets and variables` > `Actions`.
 - Click New `repository secret` and add each secret with the appropriate name and value.
 
+## 6. Usage
 
-## 6. Module Documentation
+### Testing the API Gateway
+Once you have the `api_gateway_url` and `api_key`, you can test your API using tools like curl or Postman. Here’s how you can do it:
+
+### 1. Navigate to the Project Directory:
+Navigate to the Project Directory: Make sure you are in the directory where you executed the `terraform apply` command.
+
+### 2. Get the `api_gateway_url` and `api_key`
+Once the terraform apply is completed you will get the following in your terminal:
+![Outputs](docs/assets/outputs.png)
+
+You can also get the variable separately as following:
+Run the `terraform output` Command: This command will display the output values defined in your Terraform configuration. 
+   ```bash
+   terraform output
+   ```
+
+For sensitive values like api_key, use the following command to retrieve it securely:
+
+   ```bash
+   terraform output -raw api_key
+   ```
+
+You should get the following response.
+
+### 3. Make a Request Using using curl or Postman
+ Replace <api_gateway_url> with the URL obtained from Terraform output and <api_key> with the API key you retrieved.
+
+   ```bash
+   curl -X GET "<api_gateway_url>/statuscode" -H "x-api-key: <api_key>"
+   ```
+
+Example:
+   ```bash
+   curl -X GET "https://2eju6vhpc7.execute-api.eu-central-1.amazonaws.com/prod/statuscode" -H "x-api-key: your-api-key-here"
+   ```
+You can also use Postman as follow:
+
+![postman](docs/assets/postman.png)
+
+## 7. Module Documentation
 
 For detailed documentation on each module, please refer to the following files:
 
@@ -146,32 +192,32 @@ For detailed documentation on each module, please refer to the following files:
 - [IAM Role Module](docs/iam_role.md)
 - [S3 Bucket Module](docs/s3_bucket.md)
 
-## 7. CI/CD Pipeline
+## 8. CI/CD Pipeline
 GitHub Actions Workflow
 The provided GitHub Actions workflow automates the Terraform deployment process, ensuring that any changes to the infrastructure are automatically applied.
 
-## 8. Best Practices
+## 9. Best Practices
 This project adheres to IaC principles, allowing for version-controlled and consistent infrastructure deployments.
 
 Security Considerations
 IAM roles are configured with the principle of least privilege to minimize security risks.
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
-Common Issues
+Common Issues:
 
 Terraform Init Errors: Ensure your Terraform version matches the required version.
 AWS Permission Denied: Verify that your AWS credentials have the necessary permissions.
 Logging and Monitoring
 CloudWatch logs can be accessed through the AWS console to debug and monitor the deployed services.
 
-## 10. Conclusion
+## 11. Conclusion
 This project automates the deployment of a scalable and secure infrastructure on AWS. Future enhancements could include more sophisticated monitoring, integration with additional AWS services, and more robust CI/CD features.
 
-## 11. Appendix
+## 12. Appendix
 References
 Terraform Documentation
 AWS CLI Documentation
 
-## 12. Changelog
+## 13. Changelog
 See the CHANGELOG.md file for detailed updates.

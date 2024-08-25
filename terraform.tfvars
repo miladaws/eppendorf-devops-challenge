@@ -28,8 +28,14 @@ stage_name = "prod"
 # CloudWatch Alarm Name
 alarm_name = "5xx_errors_alarm"
 
-#The email address for SNS notifications.
+# The email address for SNS notifications.
 sns_endpoint = "rezaeimilad@gmail.com"
+
+# The metric name of alarm.
+alarm_metric_name = "5XXError"
+
+# The name space of alarm.
+alarm_namespace = "Eppendorf/ApiGateway"
 
 # S3 bucket name for state file
 terraform_state_bucket      = "eppendorf-s3-state-bucket082024"  # Replace with you bucket name

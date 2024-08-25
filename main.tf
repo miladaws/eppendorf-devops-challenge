@@ -70,8 +70,8 @@ module "sns" {
 module "cloudwatch" {
   source             = "./modules/cloudwatch"
   alarm_name         = "High5XXErrors"
-  metric_name        = "5XXError"
-  namespace          = "Eppendorf/ApiGateway"
+  metric_name        = var.alarm_metric_name
+  namespace          = var.alarm_namespace
   threshold          = 10
   evaluation_periods = 1
   api_name           = module.api_gateway.api_name
@@ -86,8 +86,8 @@ resource "aws_cloudwatch_log_metric_filter" "api_gateway_5xx_errors" {
   pattern        = "{ $.status = 5* }"
 
   metric_transformation {
-    name         = "5XXError"
-    namespace    = "Custom/ApiGateway"
+    name         = var.alarm_metric_name
+    namespace    = var.alarm_namespace
     value        = "1"
   }
 }

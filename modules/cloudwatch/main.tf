@@ -2,8 +2,8 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   alarm_name          = "${var.alarm_name}-${var.stage_name}"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = var.evaluation_periods
-  metric_name         = "5XXError"
-  namespace           = "Eppendorf/ApiGateway"
+  metric_name         = var.metric_name
+  namespace           = var.namespace
   period              = 10  
   statistic           = "Sum"
   threshold           = var.threshold
