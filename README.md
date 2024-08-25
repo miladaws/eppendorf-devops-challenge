@@ -194,7 +194,10 @@ For detailed documentation on each module, please refer to the following files:
 
 ## 8. CI/CD Pipeline
 GitHub Actions Workflow
-The provided GitHub Actions workflow automates the Terraform deployment process, ensuring that any changes to the infrastructure are automatically applied.
+This project utilizes GitHub Actions to implement a robust CI/CD (Continuous Integration and Continuous Deployment) pipeline. The provided GitHub Actions workflow automates the entire Terraform deployment process, ensuring that any changes to the infrastructure code are tested, validated, and applied automatically, reducing the risk of manual errors and ensuring consistency across environments. Checkou `GitHub Secrets` at `step 2`.
+
+All he deployment will be done automatically on Github after merging branches to the main.
+![CICD](docs/assets/CICD.png)
 
 ## 9. Best Practices
 This project adheres to IaC principles, allowing for version-controlled and consistent infrastructure deployments.
@@ -208,16 +211,20 @@ Common Issues:
 
 Terraform Init Errors: Ensure your Terraform version matches the required version.
 AWS Permission Denied: Verify that your AWS credentials have the necessary permissions.
-Logging and Monitoring
+
+Logging and Monitoring:
+
 CloudWatch logs can be accessed through the AWS console to debug and monitor the deployed services.
 
 ## 11. Conclusion
 This project automates the deployment of a scalable and secure infrastructure on AWS. Future enhancements could include more sophisticated monitoring, integration with additional AWS services, and more robust CI/CD features.
 
 ## 12. Appendix
-References
+
+References:
+
 Terraform Documentation
 AWS CLI Documentation
 
 ## 13. Changelog
-See the CHANGELOG.md file for detailed updates.
+See the [CHANGELOG.md](CHANGELOG.md) file for detailed updates.
